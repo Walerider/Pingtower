@@ -1,4 +1,4 @@
-package com.walerider.pingdom.fragments;
+package com.walerider.pingdom.fragments.profile;
 
 import android.os.Bundle;
 
