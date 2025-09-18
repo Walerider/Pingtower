@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.walerider.pingdom.MainActivity;
 import com.walerider.pingdom.R;
 
 public class ProfileFragment extends Fragment {
@@ -31,5 +33,12 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BottomNavigationView bottomNavigationView = ((MainActivity)requireActivity()).getBottomNavigationView();
+        bottomNavigationView.setSelectedItemId(R.id.profileFragment);
     }
 }

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.walerider.pingdom.R;
+import com.walerider.pingdom.utils.AnimatedStatusView;
 
 import java.util.List;
 
@@ -34,6 +35,10 @@ public class SitesRecyclerAdapter extends RecyclerView.Adapter<SitesRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull SitesRecyclerAdapter.SitesViewHolder holder, int position) {
         SitesRecyclerAdapter.SitesViewHolder sitesViewHolder = (SitesRecyclerAdapter.SitesViewHolder)holder;
+        sitesViewHolder.siteNameTextView.setText(siteList.get(position).getUrl());
+        Log.i("SitesAdapter","working");
+        Log.i("site",siteList.get(position).getStatus());
+        sitesViewHolder.animatedStatusView.setOnlineWithAnimation(siteList.get(position).getStatus().equals("online"));
         /*if(components.get(position).getImage() != null){
             Log.e("image source",components.get(position).getImage());
             Glide.with(catalogViewHolder.itemView)
@@ -55,9 +60,11 @@ public class SitesRecyclerAdapter extends RecyclerView.Adapter<SitesRecyclerAdap
     }
     public static class SitesViewHolder extends RecyclerView.ViewHolder {
         public TextView siteNameTextView;
+        AnimatedStatusView animatedStatusView;
         SitesViewHolder(View view){
             super(view);
             siteNameTextView = view.findViewById(R.id.siteNameTextView);
+            animatedStatusView = view.findViewById(R.id.statusView);
         }
     }
 }

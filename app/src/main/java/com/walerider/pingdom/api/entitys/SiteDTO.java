@@ -33,4 +33,14 @@ public class SiteDTO {
     public void setResponseTimeMs(Integer responseTimeMs) {
         this.responseTimeMs = responseTimeMs;
     }
+
+    @Override
+    public String toString() {
+        return "SiteDTO{" +
+                "id=" + id +
+                ", url='" + url + '\'' +
+                ", status='" + status + '\'' +
+                ", responseTimeMs=" + responseTimeMs +
+                '}';
+    }
 }

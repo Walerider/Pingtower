@@ -15,6 +15,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.walerider.pingdom.MainActivity;
 import com.walerider.pingdom.R;
 
 import retrofit2.Call;
@@ -84,6 +86,14 @@ public class RegisterFragment extends Fragment {
         //registerUser(username, email, password);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        BottomNavigationView bottomNavigationView = ((MainActivity)requireActivity()).getBottomNavigationView();
+        if(bottomNavigationView.getSelectedItemId() != R.id.profileFragment){
+            bottomNavigationView.setSelectedItemId(R.id.profileFragment);
+        }
+    }
     /*private void registerUser(String username, String email, String password) {
 
         API apiService = APIClient.getApi();
