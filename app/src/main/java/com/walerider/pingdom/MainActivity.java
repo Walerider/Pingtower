@@ -43,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private void bottomNavigationLogic(BottomNavigationView bottomNavigationView,NavController navController){
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
+            if(item.getItemId() == R.id.sitePingCheckFragment){
+                navController.navigate(R.id.sitePingCheckFragment);
+                return true;
+            }
             if (item.getItemId() == R.id.profileFragment){
                 if(UserData.getBoolean("isLogin")){
 

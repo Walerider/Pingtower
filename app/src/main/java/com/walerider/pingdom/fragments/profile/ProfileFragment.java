@@ -17,7 +17,6 @@ public class ProfileFragment extends Fragment {
     public ProfileFragment() {
     }
 
-    // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance(String param1, String param2) {
         ProfileFragment fragment = new ProfileFragment();
         return fragment;

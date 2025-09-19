@@ -19,6 +19,8 @@ import retrofit2.http.Query;
 public interface API {
     @GET("/api/sites")
     Call<List<SiteDTO>> getSites();
+    @POST
+    Call<SiteDTO> getSiteInfo(SiteDTO site);
     @POST("api/login")
     Call<UserDTO> login(@Body UserDTO user);
     @POST("api/register")

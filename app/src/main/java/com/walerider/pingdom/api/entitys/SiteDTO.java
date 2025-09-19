@@ -34,6 +34,19 @@ public class SiteDTO {
         this.responseTimeMs = responseTimeMs;
     }
 
+    public SiteDTO(String url) {
+        this.url = url;
+    }
+
+    public SiteDTO(String url, String status, Integer responseTimeMs) {
+        this.url = url;
+        this.status = status;
+        this.responseTimeMs = responseTimeMs;
+    }
+
+    public SiteDTO() {
+    }
+
     @Override
     public String toString() {
         return "SiteDTO{" +

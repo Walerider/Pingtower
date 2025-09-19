@@ -18,6 +18,9 @@ import androidx.navigation.Navigation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.walerider.pingdom.MainActivity;
 import com.walerider.pingdom.R;
+import com.walerider.pingdom.api.API;
+import com.walerider.pingdom.api.APIClient;
+import com.walerider.pingdom.api.entitys.UserDTO;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -89,10 +92,10 @@ public class LoginFragment extends Fragment {
     }
 
     private void validateInput(ValidationCallback callback) {
-        String username = usernameEditText.getText().toString().trim();
+        String email = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        if (username.isEmpty()) {
+        if (email.isEmpty()) {
             usernameEditText.setError("Введите логин");
             callback.onValidationResult(false);
             return;
@@ -103,23 +106,17 @@ public class LoginFragment extends Fragment {
             callback.onValidationResult(false);
             return;
         }
-
-        if (password.length() < 6) {
-            passwordEditText.setError("Пароль должен содержать минимум 6 символов");
-            callback.onValidationResult(false);
-            return;
-        }
-        /*API api = APIClient.getApi();
-        Call<String> call = api.loginUser(username, password);
-
-        call.enqueue(new Callback<String>() {
+        API api = APIClient.getApi(getContext());
+        Call<UserDTO> call = api.login(new UserDTO(email, password));
+        Log.i("call pingdom",email + password);
+        call.enqueue(new Callback<UserDTO>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                 if (response.isSuccessful()) {
-                    String result = response.body();
+
+                    UserDTO result = response.body();
                     callback.onValidationResult(true);
-                    writeInShared(Integer.parseInt(result));
-                    Log.e("id",result);
+                    Log.e("id",response.body().toString());
                 } else {
                     Log.e("Retrofit", "Ошибка: " + response.code());
                     Toast.makeText(getContext(), "Логин или пароль введены неправильно", Toast.LENGTH_SHORT).show();
@@ -128,15 +125,13 @@ public class LoginFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+
                 Log.e("Retrofit", "Ошибка сети: " + t.getMessage());
-                if(!call.isCanceled()){
-                    callback.onValidationResult(true);
-                }else{
-                    callback.onValidationResult(false);
-                }
+                Log.e("Retrofit", "Ошибка сети: " + t.getMessage());
+
             }
-        });*/
+        });
 
     }
     public interface ValidationCallback {
@@ -148,16 +143,16 @@ public class LoginFragment extends Fragment {
         UserData.setBoolean("isLogin",true);
         UserData.setInteger("id",id);*/
     }
-    private void navigateToProfile() {
+    /*private void navigateToProfile() {
 
 
-        /*navController.navigate(
-                        R.id.action_loginFragment_to_profileFragment,
+        navController.navigate(
+                        R.id.profileFragment,
                 null,
                 new NavOptions.Builder()
                                 .setPopUpTo(R.id.loginFragment, true)
                                 .build(),
                 null
-                );*/
-    }
+                );
+    }*/
 }

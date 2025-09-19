@@ -2,6 +2,7 @@ package com.walerider.pingdom.api.entitys;
 
 public class UserDTO {
     Long id;
+    User user;
     String email;
     String password;
     String token;
@@ -35,5 +36,23 @@ public class UserDTO {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public UserDTO(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public UserDTO(User user, String token) {
+        this.user = user;
+        this.token = token;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "user=" + user.toString() +
+                ", token='" + token + '\'' +
+                '}';
     }
 }

@@ -1,14 +1,33 @@
 package com.walerider.pingdom.fragments.sites;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.walerider.pingdom.R;
+import com.walerider.pingdom.api.API;
+import com.walerider.pingdom.api.APIClient;
+import com.walerider.pingdom.api.entitys.SiteDTO;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.stream.Collectors;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,34 +35,16 @@ import com.walerider.pingdom.R;
  * create an instance of this fragment.
  */
 public class SiteFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private String url;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
     public SiteFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SiteFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SiteFragment newInstance(String param1, String param2) {
         SiteFragment fragment = new SiteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,15 +53,50 @@ public class SiteFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            url = getArguments().getString("url");
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_site, container, false);
+        View view = inflater.inflate(R.layout.fragment_site, container, false);
+        recyclerView = view.findViewById(R.id.siteRecyclerView);
+        progressBar = view.findViewById(R.id.siteProgressBar);
+        return view;
+    }
+    private class GetProduct{
+        int currIndex = 0;
+        public void getInfo(String url) {
+            if(currIndex == 1){
+                currIndex++;
+                recyclerView.setVisibility(View.VISIBLE);
+                getInfo(url);
+            }
+            progressBar.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            API apiService = APIClient.getApi(getContext());
+
+            Call<SiteDTO> call = apiService.getSiteInfo(new SiteDTO(url));
+            call.enqueue(new Callback<SiteDTO>() {
+                @Override
+                public void onResponse(@NonNull Call<SiteDTO> call, @NonNull Response<SiteDTO> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        Log.e("API", "Success");
+                        Log.e("API", response.body().toString());
+                        currIndex++;
+                        getInfo(url);
+                    } else {
+                        Toast.makeText(getContext(), "Ошибка: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(@NonNull Call<SiteDTO> call, @NonNull Throwable t) {
+                    Toast.makeText(getContext(), "Ошибка: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("API", "Ошибка запроса", t);
+                }
+            });
+        }
+
     }
 }
