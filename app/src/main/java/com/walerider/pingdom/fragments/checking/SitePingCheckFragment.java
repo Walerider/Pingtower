@@ -15,11 +15,6 @@ import com.google.android.material.button.MaterialButton;
 import com.walerider.pingdom.MainActivity;
 import com.walerider.pingdom.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SitePingCheckFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SitePingCheckFragment extends Fragment {
     EditText urlEditText;
     MaterialButton searchButton;

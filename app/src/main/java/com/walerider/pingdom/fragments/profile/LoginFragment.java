@@ -22,6 +22,9 @@ import com.walerider.pingdom.api.API;
 import com.walerider.pingdom.api.APIClient;
 import com.walerider.pingdom.api.entitys.UserDTO;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -91,7 +94,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private void validateInput(ValidationCallback callback) {
+    private void validateInput(ValidationCallback callback) throws NoSuchAlgorithmException, KeyManagementException {
         String email = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
