@@ -7,7 +7,15 @@ import android.net.NetworkInfo;
 
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Cache;
 import okhttp3.CacheControl;
@@ -21,17 +29,45 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
     //10.0.2.2
-    private static final String BASE_URL = "http://185.185.143.72:443";
+    private static final String BASE_URL = "https://185.185.143.72:443";
     private static Retrofit retrofit = null;
     private static final long CACHE_SIZE = 10 * 1024 * 1024; // 10 MB cache
-    public static API getApi(Context context){
+    public static API getApi(Context context) throws NoSuchAlgorithmException, KeyManagementException {
         if(retrofit == null){
             Cache cache = new Cache(context.getCacheDir(), CACHE_SIZE);
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            final TrustManager[] trustAllCerts = new TrustManager[] {
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                        }
+
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return new X509Certificate[]{};
+                        }
+                    }
+            };
+
+            // Создаем SSL context с нашим TrustManager
+            final SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            // Создаем socket factory
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            // Создаем клиент который игнорирует SSL ошибки
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
                     .connectTimeout(60, TimeUnit.SECONDS)
                     .readTimeout(60, TimeUnit.SECONDS)
+                    .sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0])
+                    .hostnameVerifier((hostname, session) -> true)
                     .writeTimeout(60, TimeUnit.SECONDS)
                     .cache(cache)
                     .addInterceptor(logging)

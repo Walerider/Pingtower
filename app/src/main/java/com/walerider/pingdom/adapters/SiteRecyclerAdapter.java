@@ -39,13 +39,13 @@ public class SiteRecyclerAdapter extends RecyclerView.Adapter<SiteRecyclerAdapte
             holder.infoStatusView.setText(siteDTO.getStatus());
         }if(position == 2){
             holder.signatureNameTextView.setText("Отклик");
-            holder.infoStatusView.setText(siteDTO.getResponseTimeMs());
+            holder.infoStatusView.setText(siteDTO.getResponse_time_ms());
         }
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
     public static class SiteViewHolder extends RecyclerView.ViewHolder {
         public TextView signatureNameTextView;

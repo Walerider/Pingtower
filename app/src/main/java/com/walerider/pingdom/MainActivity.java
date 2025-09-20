@@ -14,6 +14,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.walerider.pingdom.api.entitys.User;
+import com.walerider.pingdom.utils.TokenStorage;
 import com.walerider.pingdom.utils.UserData;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +39,11 @@ public class MainActivity extends AppCompatActivity {
         navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         UserData.init(this);
+        UserData.setString("name",null);
+        UserData.setString("email",null);
+        UserData.setBoolean("isLogin",false);
+        TokenStorage.init(this);
+        TokenStorage.removeToken();
         bottomNavigationLogic(bottomNavigationView,navController);
     }
 

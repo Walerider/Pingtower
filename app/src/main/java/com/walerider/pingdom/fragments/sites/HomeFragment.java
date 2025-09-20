@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.walerider.pingdom.MainActivity;
@@ -42,15 +43,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         List<SiteDTO> sitesList = new ArrayList<>();
-        SiteDTO siteDTO = new SiteDTO();
-        siteDTO.setUrl("noodlemagazine.com");
-        siteDTO.setStatus("online");
-        SiteDTO siteDTO2 = new SiteDTO();
-        siteDTO2.setUrl("noodlemagazine.com");
-        siteDTO2.setStatus("offline");
-        sitesList.add(siteDTO);
-        sitesList.add(siteDTO2);
-        Log.i("sitesList", Arrays.toString(sitesList.toArray()));
         recyclerView = view.findViewById(R.id.sitesRecyclerView);
         SitesRecyclerAdapter adapter = new SitesRecyclerAdapter(getContext(),sitesList);
         recyclerView.setAdapter(adapter);
@@ -64,6 +56,6 @@ public class HomeFragment extends Fragment {
         if(bottomNavigationView.getSelectedItemId() != R.id.homeFragment){
             bottomNavigationView.setSelectedItemId(R.id.homeFragment);
         }
-
     }
+
 }

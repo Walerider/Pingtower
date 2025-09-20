@@ -1,10 +1,14 @@
 package com.walerider.pingdom.api.entitys;
 
+import java.util.List;
+
 public class SiteDTO {
     Long id;
     String url;
     String status;
-    Integer responseTimeMs;
+
+    String response_time_ms;
+    List<EndpointDTO> endpoints;
 
     public Long getId() {
         return id;
@@ -26,22 +30,30 @@ public class SiteDTO {
         this.status = status;
     }
 
-    public Integer getResponseTimeMs() {
-        return responseTimeMs;
-    }
-
-    public void setResponseTimeMs(Integer responseTimeMs) {
-        this.responseTimeMs = responseTimeMs;
-    }
 
     public SiteDTO(String url) {
         this.url = url;
     }
 
-    public SiteDTO(String url, String status, Integer responseTimeMs) {
+    public String getResponse_time_ms() {
+        return response_time_ms;
+    }
+
+    public void setResponse_time_ms(String response_time_ms) {
+        this.response_time_ms = response_time_ms;
+    }
+
+    public SiteDTO(String url, String status, String response_time_ms) {
         this.url = url;
         this.status = status;
-        this.responseTimeMs = responseTimeMs;
+        this.response_time_ms = response_time_ms;
+    }
+
+    public SiteDTO(String url, String status, String response_time_ms, List<EndpointDTO> list) {
+        this.url = url;
+        this.status = status;
+        this.response_time_ms = response_time_ms;
+        this.endpoints = list;
     }
 
     public SiteDTO() {
@@ -50,10 +62,10 @@ public class SiteDTO {
     @Override
     public String toString() {
         return "SiteDTO{" +
-                "id=" + id +
-                ", url='" + url + '\'' +
+                "url='" + url + '\'' +
                 ", status='" + status + '\'' +
-                ", responseTimeMs=" + responseTimeMs +
+                ", response_time_ms='" + response_time_ms + '\'' +
+                ", endpoints=" + endpoints +
                 '}';
     }
 }

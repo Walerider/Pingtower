@@ -24,6 +24,8 @@ import com.walerider.pingdom.api.entitys.SiteDTO;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.stream.Collectors;
 
 import retrofit2.Call;
@@ -67,21 +69,27 @@ public class SiteFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if(url != ""){
-            getSite();
+            try {
+                getSite();
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            } catch (KeyManagementException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    private void getSite(){
+    private void getSite() throws NoSuchAlgorithmException, KeyManagementException {
         new GetSite().getInfo(url);
     }
     private class GetSite{
         int currIndex = 0;
         SiteDTO siteDTO = new SiteDTO();
-        public void getInfo(String url) {
-            if(currIndex == 1){
-                currIndex++;
+        public void getInfo(String url) throws NoSuchAlgorithmException, KeyManagementException {
+            if(currIndex >= 1){
+                progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
-                getInfo(url);
+                return;
             }
             progressBar.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
@@ -92,15 +100,22 @@ public class SiteFragment extends Fragment {
                 @Override
                 public void onResponse(@NonNull Call<SiteDTO> call, @NonNull Response<SiteDTO> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        Log.e("API", "Success");
-                        Log.e("API", response.body().toString());
-                        siteDTO.setUrl(response.body().getUrl());
-                        siteDTO.setStatus(response.body().getStatus());
-                        siteDTO.setResponseTimeMs(response.body().getResponseTimeMs());
-                        SiteRecyclerAdapter adapter = new SiteRecyclerAdapter(siteDTO);
-                        recyclerView.setAdapter(adapter);
-                        currIndex++;
-                        getInfo(url);
+                        try {
+                            Log.e("API", "Success");
+                            Log.e("API", response.body().toString());
+                            Log.e("API", Integer.toString(currIndex));
+                            currIndex++;
+                            siteDTO.setUrl(response.body().getUrl());
+                            siteDTO.setStatus(response.body().getStatus());
+                            siteDTO.setResponse_time_ms(response.body().getResponse_time_ms() + "мс");
+                            SiteRecyclerAdapter adapter = new SiteRecyclerAdapter(siteDTO);
+                            recyclerView.setAdapter(adapter);
+                            getInfo(url);
+                        } catch (NoSuchAlgorithmException e) {
+                            throw new RuntimeException(e);
+                        } catch (KeyManagementException e) {
+                            throw new RuntimeException(e);
+                        }
                     } else {
                         Toast.makeText(getContext(), "Ошибка: " + response.code(), Toast.LENGTH_SHORT).show();
                     }

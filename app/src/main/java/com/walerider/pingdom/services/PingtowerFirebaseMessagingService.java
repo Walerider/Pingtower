@@ -20,6 +20,8 @@ import com.walerider.pingdom.MainActivity;
 import com.walerider.pingdom.api.API;
 import com.walerider.pingdom.api.APIClient;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 public class PingtowerFirebaseMessagingService extends FirebaseMessagingService {
@@ -109,10 +111,16 @@ public class PingtowerFirebaseMessagingService extends FirebaseMessagingService 
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
-        sendRegistrationToServer(token);
+        try {
+            sendRegistrationToServer(token);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void sendRegistrationToServer(String token) {
+    private void sendRegistrationToServer(String token) throws NoSuchAlgorithmException, KeyManagementException {
         API apiClient = APIClient.getApi(getApplicationContext());
         /*Call<ApiResponse> call = apiService.sendDeviceToken(token);
 

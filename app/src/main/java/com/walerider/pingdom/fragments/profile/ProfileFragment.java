@@ -37,7 +37,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        BottomNavigationView bottomNavigationView = ((MainActivity)requireActivity()).getBottomNavigationView();
-        bottomNavigationView.setSelectedItemId(R.id.profileFragment);
+        /*BottomNavigationView bottomNavigationView = ((MainActivity)requireActivity()).getBottomNavigationView();
+        bottomNavigationView.setSelectedItemId(R.id.profileFragment);*/
     }
 }
