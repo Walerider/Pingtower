@@ -3,8 +3,10 @@ package com.walerider.pingdom.api.entitys;
 public class UserDTO {
     Long id;
     User user;
+    String name;
     String email;
     String password;
+    String password_confirmation;
     String token;
     public Long getId() {
         return id;
@@ -34,6 +36,14 @@ public class UserDTO {
         return token;
     }
 
+    public String getPassword_confirmation() {
+        return password_confirmation;
+    }
+
+    public void setPassword_confirmation(String password_confirmation) {
+        this.password_confirmation = password_confirmation;
+    }
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -46,6 +56,21 @@ public class UserDTO {
     public UserDTO(User user, String token) {
         this.user = user;
         this.token = token;
+    }
+
+    public UserDTO(String name, String email, String password, String password_confirmation) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.password_confirmation = password_confirmation;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public User getUser() {

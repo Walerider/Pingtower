@@ -18,6 +18,14 @@ import androidx.navigation.Navigation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.walerider.pingdom.MainActivity;
 import com.walerider.pingdom.R;
+import com.walerider.pingdom.api.API;
+import com.walerider.pingdom.api.APIClient;
+import com.walerider.pingdom.api.entitys.UserDTO;
+import com.walerider.pingdom.utils.TokenStorage;
+import com.walerider.pingdom.utils.UserData;
+
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,6 +71,7 @@ public class RegisterFragment extends Fragment {
         String username = usernameEditText.getText().toString().trim();
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
+        String passwordConfirmation = repeatPasswordEditText.getText().toString().trim();
 
         if (username.isEmpty()) {
             usernameEditText.setError("Введите логин");
@@ -83,7 +92,13 @@ public class RegisterFragment extends Fragment {
             repeatPasswordEditText.setError("Пароли не совпадают");
             return;
         }
-        //registerUser(username, email, password);
+        try {
+            registerUser(username, email, password,passwordConfirmation);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (KeyManagementException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -94,25 +109,26 @@ public class RegisterFragment extends Fragment {
             bottomNavigationView.setSelectedItemId(R.id.profileFragment);
         }
     }
-    /*private void registerUser(String username, String email, String password) {
+    private void registerUser(String username, String email, String password,String passwordConfirmation) throws NoSuchAlgorithmException, KeyManagementException {
 
-        API apiService = APIClient.getApi();
-        UserPOJO user = new UserPOJO(username,email,password);
-        Call<String> call = apiService.registerUser(user);
-        call.enqueue(new Callback<String>() {
+        API apiService = APIClient.getApi(getContext());
+        UserDTO user = new UserDTO(username,email,password,passwordConfirmation);
+        Call<UserDTO> call = apiService.register(user);
+        call.enqueue(new Callback<UserDTO>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                 if (response.code() == 200) {
-                    String result = response.body();
-                    UserData.setString("username",username);
-                    UserData.setString("password",password);
+                    UserDTO result = response.body();
+                    UserData.setString("username",result.getUser().getName());
+                    UserData.setString("email",result.getUser().getEmail());
                     UserData.setBoolean("isLogin",true);
-                    UserData.setInteger("id", Integer.parseInt(result));
-                    Log.e("id",result);
+                    UserData.setLong("id", result.getUser().getId());
+                    TokenStorage.saveToken(result.getToken());
+                    Log.e("id", String.valueOf(result.getId()));
                     Toast.makeText(getContext(), "Регистрация успешна!", Toast.LENGTH_SHORT).show();
                     NavController navController = Navigation.findNavController(requireView());
                     NavOptions navOptions = new NavOptions.Builder()
-                            .setPopUpTo(R.id.registerFragment, true) // Очищаем стек до registerFragment
+                            .setPopUpTo(R.id.profileFragment, true) // Очищаем стек до registerFragment
                             .build();
 
                     navController.navigate(
@@ -126,15 +142,13 @@ public class RegisterFragment extends Fragment {
                 }
             }
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                if(!call.isCanceled()){
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+                /*if(!call.isCanceled()){
                     Toast.makeText(getContext(), "Регистрация успешна!", Toast.LENGTH_SHORT).show();
                     NavController navController = Navigation.findNavController(requireView());
                     NavOptions navOptions = new NavOptions.Builder()
                             .setPopUpTo(R.id.registerFragment, true) // Очищаем стек до registerFragment
                             .build();
-                    UserData.setString("username",username);
-                    UserData.setString("password",password);
                     navController.navigate(
                             R.id.profileFragment, // ID вашего фрагмента авторизации
                             null,
@@ -142,9 +156,9 @@ public class RegisterFragment extends Fragment {
                     );
                 }
                 Log.e("Retrofit", "Network bug: " + t.getMessage());
-                Log.e("Retrofit", "Network bug: " + call.isCanceled());
+                Log.e("Retrofit", "Network bug: " + call.isCanceled());*/
             }
         });
 
-    }*/
+    }
 }

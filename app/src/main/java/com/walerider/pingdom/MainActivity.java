@@ -39,11 +39,7 @@ public class MainActivity extends AppCompatActivity {
         navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         UserData.init(this);
-        UserData.setString("name",null);
-        UserData.setString("email",null);
-        UserData.setBoolean("isLogin",false);
         TokenStorage.init(this);
-        TokenStorage.removeToken();
         bottomNavigationLogic(bottomNavigationView,navController);
     }
 

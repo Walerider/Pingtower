@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 
 import java.io.IOException;
@@ -142,17 +143,19 @@ class RetryInterceptor implements Interceptor {
                 response = chain.proceed(request);
                 if (response.isSuccessful()) {
                     return response;
+                }else{
+                    return response;
                 }
             } catch (IOException e) {
                 exception = e;
+                Log.e("Request catch",e.getMessage());
                 if (i == maxRetries) {
                     break;
                 }
                 try {
                     Thread.sleep(1000 * (i + 1)); // Экспоненциальная задержка
                 } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                    throw new IOException("Interrupted", ie);
+                    Log.e("Request catch",ie.getMessage());
                 }
             }
         }
@@ -164,7 +167,6 @@ class RetryInterceptor implements Interceptor {
         if (response != null) {
             return response;
         }
-
-        throw new IOException("Unknown error");
+        return response;
     }
 }

@@ -94,7 +94,6 @@ public class SiteFragment extends Fragment {
             progressBar.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
             API apiService = APIClient.getApi(getContext());
-
             Call<SiteDTO> call = apiService.getSiteInfo(new SiteDTO(url));
             call.enqueue(new Callback<SiteDTO>() {
                 @Override
@@ -107,7 +106,11 @@ public class SiteFragment extends Fragment {
                             currIndex++;
                             siteDTO.setUrl(response.body().getUrl());
                             siteDTO.setStatus(response.body().getStatus());
-                            siteDTO.setResponse_time_ms(response.body().getResponse_time_ms() + "мс");
+                            siteDTO.setResponse_time_ms(response.body().getResponse_time_ms());
+                            siteDTO.setSsl_valid(response.body().getSsl_valid());
+                            siteDTO.setSsl_days_left(response.body().getSsl_days_left());
+                            siteDTO.setSsl_expires_at(response.body().getSsl_expires_at());
+                            siteDTO.setSsl_error(response.body().getSsl_error());
                             SiteRecyclerAdapter adapter = new SiteRecyclerAdapter(siteDTO);
                             recyclerView.setAdapter(adapter);
                             getInfo(url);
@@ -117,7 +120,18 @@ public class SiteFragment extends Fragment {
                             throw new RuntimeException(e);
                         }
                     } else {
-                        Toast.makeText(getContext(), "Ошибка: " + response.code(), Toast.LENGTH_SHORT).show();
+                        /*Toast.makeText(getContext(), "Ошибка: " + response.code(), Toast.LENGTH_SHORT).show();*/
+                        try {
+                            currIndex++;
+                            siteDTO.setUrl(url);
+                            SiteRecyclerAdapter adapter = new SiteRecyclerAdapter(siteDTO);
+                            recyclerView.setAdapter(adapter);
+                            getInfo(url);
+                        } catch (NoSuchAlgorithmException e) {
+                            throw new RuntimeException(e);
+                        } catch (KeyManagementException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
                 @Override

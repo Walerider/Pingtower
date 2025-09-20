@@ -1,14 +1,19 @@
 package com.walerider.pingdom.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.walerider.pingdom.MainActivity;
 import com.walerider.pingdom.api.entitys.SiteDTO;
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.walerider.pingdom.R;
@@ -19,9 +24,11 @@ import java.util.List;
 public class SitesRecyclerAdapter extends RecyclerView.Adapter<SitesRecyclerAdapter.SitesViewHolder>{
     LayoutInflater inflater;
     List<SiteDTO> siteList;
-    public SitesRecyclerAdapter(Context context,List<SiteDTO> siteList) {
+    NavController navController;
+    public SitesRecyclerAdapter(Context context,List<SiteDTO> siteList,NavController navController) {
         this.inflater = LayoutInflater.from(context);
         this.siteList = siteList;
+        this.navController = navController;
     }
 
     @NonNull
@@ -38,20 +45,18 @@ public class SitesRecyclerAdapter extends RecyclerView.Adapter<SitesRecyclerAdap
         sitesViewHolder.siteNameTextView.setText(siteList.get(position).getUrl());
         Log.i("SitesAdapter","working");
         Log.i("site",siteList.get(position).getStatus());
+        sitesViewHolder.itemView.setOnClickListener(v ->{
+            Bundle bundle = new Bundle();
+            bundle.putString("url",siteList.get(position).getUrl());
+            NavOptions navOptions = new NavOptions.Builder()
+                    .setPopUpTo(R.id.sitePingCheckFragment, true)
+                    .build();
+            navController.navigate(R.id.siteFragment,
+                    bundle,
+                    navOptions);
+        });
         sitesViewHolder.animatedStatusView.setOnlineWithAnimation(siteList.get(position).getStatus().equals("online"));
-        /*if(components.get(position).getImage() != null){
-            Log.e("image source",components.get(position).getImage());
-            Glide.with(catalogViewHolder.itemView)
-                    .load(components.get(position).getImage())
-                    .into(catalogViewHolder.imageView);
-        }else{
-            catalogViewHolder.imageView.setImageResource(R.drawable.ic_launcher_foreground);
-        }
 
-        catalogViewHolder.productNameTextView.setText(components.get(position).getName());
-        Log.e("component",components.get(position).getName());
-        catalogViewHolder.productDescriptionTextView.setText(components.get(position).getDescription());
-        catalogViewHolder.priceTextView.setText("От " + components.get(position).getPrice() + "р");*/
     }
 
     @Override

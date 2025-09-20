@@ -24,8 +24,14 @@ public class UserData {
     }
     public static void setInteger(String key, int value) {
         sharedPreferences.edit().putInt(key,value).apply();
+    }public static void setLong(String key, Long value) {
+        sharedPreferences.edit().putLong(key,value).apply();
     }
-
+    public static void clearAll() {
+        if (sharedPreferences != null) {
+            sharedPreferences.edit().clear().apply();
+        }
+    }
     public static Integer getInteger(String key) {
         return sharedPreferences.getInt(key,-1);
     }
