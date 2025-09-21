@@ -52,7 +52,6 @@ public class RegisterFragment extends Fragment {
         loginButton.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(view);
 
-            // Создаем NavOptions для очистки стека
             NavOptions navOptions = new NavOptions.Builder()
                     .setPopUpTo(R.id.registerFragment, true) // Удаляем текущий фрагмент из стека
                     .build();

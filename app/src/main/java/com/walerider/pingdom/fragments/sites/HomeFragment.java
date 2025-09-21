@@ -62,7 +62,6 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.sitesRecyclerView);
         infoLibraryTextView = view.findViewById(R.id.infoLibraryTextView);
         progressBar = view.findViewById(R.id.progressBar);
-        Log.e("Token",TokenStorage.getToken());
         try {
             getLibrarySites();
         } catch (NoSuchAlgorithmException e) {
@@ -82,7 +81,13 @@ public class HomeFragment extends Fragment {
         }
     }
     private void getLibrarySites() throws NoSuchAlgorithmException, KeyManagementException {
-        new GetSites().getLibrary();
+        if(TokenStorage.getToken() != null){
+            new GetSites().getLibrary();
+            Log.e("token",TokenStorage.getToken());
+        }else{
+
+            infoLibraryTextView.setVisibility(View.VISIBLE);
+        }
     }
     private class GetSites{
         int currIndex = 0;

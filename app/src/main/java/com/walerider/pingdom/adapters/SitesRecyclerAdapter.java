@@ -48,6 +48,7 @@ public class SitesRecyclerAdapter extends RecyclerView.Adapter<SitesRecyclerAdap
         sitesViewHolder.itemView.setOnClickListener(v ->{
             Bundle bundle = new Bundle();
             bundle.putString("url",siteList.get(position).getUrl());
+            bundle.putLong("id",siteList.get(position).getId());
             NavOptions navOptions = new NavOptions.Builder()
                     .setPopUpTo(R.id.sitePingCheckFragment, true)
                     .build();

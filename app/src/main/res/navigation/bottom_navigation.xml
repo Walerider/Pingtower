@@ -33,4 +33,19 @@
         android:name="com.walerider.pingdom.fragments.checking.SitePingCheckFragment"
         android:label="fragment_site_ping_check"
         tools:layout="@layout/fragment_site_ping_check" />
+    <fragment
+        android:id="@+id/eventsChartFragment"
+        android:name="com.walerider.pingdom.fragments.charts.EventsChartFragment"
+        android:label="fragment_events_chart"
+        tools:layout="@layout/fragment_events_chart" />
+    <fragment
+        android:id="@+id/barChartFragment"
+        android:name="com.walerider.pingdom.fragments.charts.BarChartFragment"
+        android:label="fragment_bar_chart"
+        tools:layout="@layout/fragment_bar_chart" />
+    <fragment
+        android:id="@+id/pieChartFragment"
+        android:name="com.walerider.pingdom.fragments.charts.PieChartFragment"
+        android:label="fragment_pie_chart"
+        tools:layout="@layout/fragment_pie_chart" />
 </navigation>

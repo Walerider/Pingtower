@@ -55,14 +55,11 @@ public class APIClient {
                     }
             };
 
-            // Создаем SSL context с нашим TrustManager
             final SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
 
-            // Создаем socket factory
             final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-            // Создаем клиент который игнорирует SSL ошибки
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
                     .connectTimeout(60, TimeUnit.SECONDS)
@@ -89,27 +86,11 @@ public class APIClient {
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
 
-            if (!isNetworkAvailable()) {
-                CacheControl cacheControl = new CacheControl.Builder()
-                        .maxStale(7, TimeUnit.DAYS)
-                        .build();
-
-                request = request.newBuilder()
-                        .cacheControl(cacheControl)
-                        .build();
-            }
-
             return chain.proceed(request);
         }
 
-        private boolean isNetworkAvailable() {
-            // Реализуйте проверку сети
-
-            return true;
-        }
     }
 
-    // Интерцептор для онлайн кэша
     private static class OnlineCacheInterceptor implements Interceptor {
         @Override
         public Response intercept(Chain chain) throws IOException {
@@ -153,7 +134,7 @@ class RetryInterceptor implements Interceptor {
                     break;
                 }
                 try {
-                    Thread.sleep(1000 * (i + 1)); // Экспоненциальная задержка
+                    Thread.sleep(1000 * (i + 1));
                 } catch (InterruptedException ie) {
                     Log.e("Request catch",ie.getMessage());
                 }

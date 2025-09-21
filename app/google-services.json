@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "437227802094",
-    "project_id": "hackaton-c9580",
-    "storage_bucket": "hackaton-c9580.firebasestorage.app"
+    "project_number": "664413060884",
+    "project_id": "pingtower-316b9",
+    "storage_bucket": "pingtower-316b9.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:437227802094:android:c80df519387229ccd152ff",
+        "mobilesdk_app_id": "1:664413060884:android:62561b546ce5aeaa4b8c01",
         "android_client_info": {
           "package_name": "com.walerider.pingdom"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAoBay27Jb-_45MsCBRWTJor50OuEPQgHg"
+          "current_key": "AIzaSyBXwsTNV8xpvP3xEDbgv3K3JTSK8tZXx78"
         }
       ],
       "services": {

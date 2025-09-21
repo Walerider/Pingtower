@@ -7,12 +7,16 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -21,6 +25,7 @@ import com.walerider.pingdom.adapters.SiteRecyclerAdapter;
 import com.walerider.pingdom.api.API;
 import com.walerider.pingdom.api.APIClient;
 import com.walerider.pingdom.api.entitys.SiteDTO;
+import com.walerider.pingdom.utils.TokenStorage;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,8 +39,10 @@ import retrofit2.Response;
 
 public class SiteFragment extends Fragment {
     private String url;
+    private Long id;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private ImageButton statsButton;
     public SiteFragment() {
 
     }
@@ -52,6 +59,7 @@ public class SiteFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             url = getArguments().getString("url");
+            id = getArguments().getLong("id") == 0 ? 0 : getArguments().getLong("id");
         }
     }
 
@@ -61,7 +69,20 @@ public class SiteFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_site, container, false);
         recyclerView = view.findViewById(R.id.siteRecyclerView);
         progressBar = view.findViewById(R.id.siteProgressBar);
-
+        statsButton = view.findViewById(R.id.statsButton);
+        statsButton.setOnClickListener(v->{
+            NavController navController = Navigation.findNavController(requireView());
+            Bundle b = new Bundle();
+            b.putLong("id",id);
+            navController.navigate(
+                    R.id.eventsChartFragment, // ID вашего фрагмента авторизации
+                    b,
+                    null
+            );
+        });
+        if(!TokenStorage.hasToken()){
+            statsButton.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -89,6 +110,7 @@ public class SiteFragment extends Fragment {
             if(currIndex >= 1){
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+                statsButton.setVisibility(View.VISIBLE);
                 return;
             }
             progressBar.setVisibility(View.VISIBLE);

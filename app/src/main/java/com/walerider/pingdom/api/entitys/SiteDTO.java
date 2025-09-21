@@ -60,11 +60,12 @@ public class SiteDTO {
         this.response_time_ms = response_time_ms;
     }
 
-    public SiteDTO(String url, String status, String response_time_ms, List<EndpointDTO> list) {
+    public SiteDTO(Long id, String url, String status, String response_time_ms, List<EndpointDTO> endpoints) {
+        this.id = id;
         this.url = url;
         this.status = status;
         this.response_time_ms = response_time_ms;
-        this.endpoints = list;
+        this.endpoints = endpoints;
     }
 
     public Boolean getSsl_valid() {
@@ -122,10 +123,12 @@ public class SiteDTO {
 
     public SiteDTO() {
     }
+
     @Override
     public String toString() {
         return "SiteDTO{" +
-                "url='" + url + '\'' +
+                "id=" + id +
+                ", url='" + url + '\'' +
                 ", status='" + status + '\'' +
                 ", response_time_ms='" + response_time_ms + '\'' +
                 ", endpoints=" + endpoints +

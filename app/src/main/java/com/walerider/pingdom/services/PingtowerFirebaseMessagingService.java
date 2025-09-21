@@ -2,6 +2,7 @@ package com.walerider.pingdom.services;
 
 import static androidx.core.content.ContextCompat.getSystemService;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,24 +20,37 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.walerider.pingdom.MainActivity;
 import com.walerider.pingdom.api.API;
 import com.walerider.pingdom.api.APIClient;
+import com.walerider.pingdom.utils.TokenStorage;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
+import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+
 public class PingtowerFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FirebaseMsgService";
+    private static final String CHANNEL_ID = "fcm_service_channel";
+    private static final int NOTIFICATION_ID = 1;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "Service created");
+        createNotificationChannel();
+    }
+
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        // Проверяем, содержит ли сообщение данные
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             handleDataMessage(remoteMessage.getData());
         }
 
-        // Проверяем, содержит ли сообщение уведомление
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             sendNotification(
@@ -74,7 +88,6 @@ public class PingtowerFirebaseMessagingService extends FirebaseMessagingService 
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        // Добавляем данные в intent
         if (data != null) {
             for (Map.Entry<String, String> entry : data.entrySet()) {
                 intent.putExtra(entry.getKey(), entry.getValue());
@@ -105,7 +118,6 @@ public class PingtowerFirebaseMessagingService extends FirebaseMessagingService 
             notificationManager.createNotificationChannel(channel);
         }
 
-        notificationManager.notify(0, notificationBuilder.build());
     }
 
     @Override
@@ -119,14 +131,28 @@ public class PingtowerFirebaseMessagingService extends FirebaseMessagingService 
             throw new RuntimeException(e);
         }
     }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "FCM Service Channel",
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            channel.setDescription("Channel for FCM background service");
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
 
     private void sendRegistrationToServer(String token) throws NoSuchAlgorithmException, KeyManagementException {
         API apiClient = APIClient.getApi(getApplicationContext());
-        /*Call<ApiResponse> call = apiService.sendDeviceToken(token);
+        Call<String> call = apiClient.sendFcmToken(TokenStorage.getToken(),token);
 
-        call.enqueue(new Callback<ApiResponse>() {
+        call.enqueue(new Callback<String>() {
+
             @Override
-            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, "Token successfully sent to server");
                 } else {
@@ -135,10 +161,10 @@ public class PingtowerFirebaseMessagingService extends FirebaseMessagingService 
             }
 
             @Override
-            public void onFailure(Call<ApiResponse> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
                 Log.e(TAG, "Error sending token to server: " + t.getMessage());
             }
-        });*/
+        });
     }
 
 }
